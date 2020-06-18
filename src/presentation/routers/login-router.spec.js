@@ -100,7 +100,7 @@ describe('Login Router', () => {
   })
 
   test('It should return 200 status when valid credentials are provided', () => {
-    const { sut } = makeSut()
+    const { sut, authUseCaseSpy } = makeSut()
 
     const httpRequest = {
       body: {
@@ -111,6 +111,7 @@ describe('Login Router', () => {
     const httpResponse = sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body.accessToken).toEqual(authUseCaseSpy.accessToken)
   })
 
   test('It should return 500 status if no AuthUseCase is provided', () => {
