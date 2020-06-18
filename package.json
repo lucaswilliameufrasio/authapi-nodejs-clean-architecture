@@ -6,6 +6,11 @@
   "scripts": {
     "test": "jest"
   },
+  "standart": {
+    "env": [
+      "jest"
+    ]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
