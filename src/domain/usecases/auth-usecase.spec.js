@@ -15,6 +15,7 @@ const makeEncrypter = () => {
     encrypterSpy.isValid = true
     return encrypterSpy
 }
+
 const makeEncrypterWithError = () => {
     class EncrypterSpy {
         async compare(password, hashedPassword) {
@@ -36,6 +37,16 @@ const makeTokenGenerator = () => {
     const tokenGeneratorSpy = new TokenGeneratorSpy()
     tokenGeneratorSpy.accessToken = 'any_token'
     return tokenGeneratorSpy
+}
+
+const makeTokenGeneratorWithError = () => {
+    class TokenGeneratorSpy {
+        async generate(userId) {
+            throw new Error()
+        }
+    }
+
+    return new TokenGeneratorSpy()
 }
 
 const makeLoadUserByEmailRepository = () => {
@@ -186,6 +197,7 @@ describe('Auth UseCase', () => {
 
     test('It should throw if dependency throws', async () => {
         const loadUserByEmailRepository = makeLoadUserByEmailRepository()
+        const encrypter = makeEncrypter()
 
         const suts = [].concat(
             new AuthUseCase({
@@ -194,6 +206,11 @@ describe('Auth UseCase', () => {
             new AuthUseCase({
                 loadUserByEmailRepository,
                 encrypter: makeEncrypterWithError()
+            }),
+            new AuthUseCase({
+                loadUserByEmailRepository,
+                encrypter,
+                tokenGenerator: makeTokenGeneratorWithError()
             }),
         )
 
