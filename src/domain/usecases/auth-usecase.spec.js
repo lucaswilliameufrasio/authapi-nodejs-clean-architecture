@@ -134,6 +134,7 @@ describe('Auth UseCase', () => {
     test('It should throw if invalid dependencies are provided', async () => {
         const invalid = {}
         const loadUserByEmailRepository = makeUserByEmailRepository()
+        const encrypter = makeEncrypter()
         const suts = [].concat(
             new AuthUseCase(),
             new AuthUseCase({}),
@@ -142,6 +143,14 @@ describe('Auth UseCase', () => {
             }),
             new AuthUseCase({
                 loadUserByEmailRepository
+            }),
+            new AuthUseCase({
+                loadUserByEmailRepository,
+                encrypter: invalid
+            }),
+            new AuthUseCase({
+                loadUserByEmailRepository,
+                encrypter
             }),
         )
 
