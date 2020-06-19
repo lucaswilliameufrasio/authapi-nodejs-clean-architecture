@@ -1,5 +1,21 @@
 const { MissingParamError } = require('../../utils/errors')
 
+const makeSut = () => {
+    class LoadUserByEmailRepository {
+        async load(email) {
+            this.email = email
+        }
+    }
+
+    const loadUserByEmailRepository = new LoadUserByEmailRepository()
+
+    const sut = new AuthUseCase(loadUserByEmailRepository)
+
+    return {
+        sut,
+        loadUserByEmailRepository
+    }
+}
 class AuthUseCase {
     constructor(loadUserByEmailRepository) {
         this.loadUserByEmailRepository = loadUserByEmailRepository
@@ -19,7 +35,7 @@ class AuthUseCase {
 
 describe('Auth UseCase', () => {
     test('Should return null if no email is provided', async () => {
-        const sut = new AuthUseCase()
+        const { sut } = makeSut()
 
         const promise = sut.auth()
 
@@ -27,7 +43,7 @@ describe('Auth UseCase', () => {
     })
 
     test('Should return null if no password is provided', async () => {
-        const sut = new AuthUseCase()
+        const { sut } =  makeSut()
 
         const promise = sut.auth('any_email@email.com')
 
@@ -35,15 +51,7 @@ describe('Auth UseCase', () => {
     })
 
     test('Should call LoadUserByEmailRepository with correct email', async () => {
-        class LoadUserByEmailRepository {
-            async load(email) {
-                this.email = email
-            }
-        }
-
-        const loadUserByEmailRepository = new LoadUserByEmailRepository()
-
-        const sut = new AuthUseCase(loadUserByEmailRepository)
+        const { sut, loadUserByEmailRepository } =  makeSut()
 
         await sut.auth('any_email@email.com', 'any_password')
 
