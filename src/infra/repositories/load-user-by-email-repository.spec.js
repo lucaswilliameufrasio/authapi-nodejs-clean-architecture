@@ -5,13 +5,7 @@ const LoadUserByEmailRepository = require('./load-user-by-email-repository')
 let db
 
 const makeSut = () => {
-    const userModel = db.collection('users')
-    const sut = new LoadUserByEmailRepository(userModel)
-
-    return {
-        userModel,
-        sut
-    }
+    return new LoadUserByEmailRepository()
 }
 
 describe('LoadUserByEmail Repository', () => {
@@ -30,7 +24,7 @@ describe('LoadUserByEmail Repository', () => {
     })
 
     test('It should return null if no user is found', async () => {
-        const { sut } = makeSut()
+        const sut = makeSut()
 
         const user = await sut.load('invalid_email@mail.com')
 
@@ -38,9 +32,9 @@ describe('LoadUserByEmail Repository', () => {
     })
 
     test('It should returns an user if user is found', async () => {
-        const { sut, userModel } = makeSut()
+        const sut = makeSut()
 
-        const fakeUser = await userModel.insertOne({
+        const fakeUser = await db.collection('users').insertOne({
             email: 'valid_email@mail.com',
             name: 'any_name',
             age: 99,
@@ -56,16 +50,8 @@ describe('LoadUserByEmail Repository', () => {
         })
     })
 
-    test('It should throw if no user model is provided', async () => {
-        const sut = new LoadUserByEmailRepository()
-
-        const promise = sut.load('any_email@mail.com')
-
-        expect(promise).rejects.toThrow()
-    })
-
     test('It should throw if no email is provided', async () => {
-        const { sut } = makeSut()
+        const sut = makeSut()
 
         const promise = sut.load()
 
