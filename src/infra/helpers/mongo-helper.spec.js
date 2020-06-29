@@ -9,14 +9,14 @@ describe('sut', () => {
         await sut.disconnect()
     })
 
-    test('It should reconnect when getDb is invoked and client is disconnected', async () => {
+    test('It should reconnect when getCollection() is invoked and client is disconnected', async () => {
         expect(sut.db).toBeTruthy()
 
         await sut.disconnect()
 
         expect(sut.db).toBeFalsy()
 
-        await sut.getDb()
+        await sut.getCollection('users')
 
         expect(sut.db).toBeTruthy()
     })
