@@ -168,23 +168,6 @@ describe('Login Router', () => {
     expect(httpResponse.body.accessToken).toEqual(authUseCaseSpy.accessToken)
   })
 
-  test('It should return 500 status if AuthUseCase throws', async () => {
-    const authUseCaseSpy = makeAuthUseCaseWithError()
-
-    const sut = new LoginRouter(authUseCaseSpy)
-
-    const httpRequest = {
-      body: {
-        email: 'any@email.com',
-        password: 'any_password'
-      }
-    }
-
-    const httpResponse = await sut.route(httpRequest)
-
-    expect(httpResponse.statusCode).toBe(500)
-  })
-
   test('It should return 400 status if an invalid email is provided', async () => {
     const { sut, emailValidatorSpy } = makeSut()
     emailValidatorSpy.isEmailValid = false
@@ -199,23 +182,6 @@ describe('Login Router', () => {
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new InvalidParamError('email'))
-  })
-
-  test('It should return 500 status if EmailValidator throws', async () => {
-    const authUseCaseSpy = makeAuthUseCase()
-    const emailValidatorSpy = makeEmailValidatorWithError()
-    const sut = new LoginRouter(authUseCaseSpy, emailValidatorSpy)
-
-    const httpRequest = {
-      body: {
-        email: 'any@email.com',
-        password: 'any_password'
-      }
-    }
-
-    const httpResponse = await sut.route(httpRequest)
-
-    expect(httpResponse.statusCode).toBe(500)
   })
 
   test('It should call EmailValidator with correct email', async () => {
@@ -246,6 +212,34 @@ describe('Login Router', () => {
       new LoginRouter({
         authUseCase,
         emailValidator: invalid
+      }),
+    )
+
+    for (const sut of suts) {
+      const httpRequest = {
+        body: {
+          email: 'any@email.com',
+          password: 'any_password'
+        }
+      }
+
+      const httpResponse = await sut.route(httpRequest)
+
+      expect(httpResponse.statusCode).toBe(500)
+      expect(httpResponse.body).toEqual(new ServerError())
+    }
+  })
+
+  test('It should throw if dependency throws', async () => {
+    const authUseCase = makeAuthUseCase()
+
+    const suts = [].concat(
+      new LoginRouter({
+        authUseCase: makeAuthUseCaseWithError()
+      }),
+      new LoginRouter({
+        authUseCase,
+        emailValidator: makeEmailValidatorWithError()
       }),
     )
 
