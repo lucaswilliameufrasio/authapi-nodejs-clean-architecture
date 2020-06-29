@@ -1,3 +1,4 @@
+require('dotenv').config()
 const MongoHelper = require('../infra/helpers/mongo-helper')
 const app = require('./config/app')
 const env = require('./config/env')
