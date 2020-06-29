@@ -89,7 +89,7 @@ describe('Login Router', () => {
     const httpResponse = await sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new MissingParamError('email'))
+    expect(httpResponse.body.error).toBe(new MissingParamError('email').message)
   })
 
   test('It should return 400 status if no password is provided', async () => {
@@ -110,7 +110,7 @@ describe('Login Router', () => {
     const httpResponse = await sut.route()
 
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
+    expect(httpResponse.body.error).toBe(new ServerError().message)
   })
 
   test('It should return 500 status if httpRequest has no body', async () => {
@@ -120,7 +120,7 @@ describe('Login Router', () => {
     const httpResponse = await sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new ServerError())
+    expect(httpResponse.body.error).toBe(new ServerError().message)
   })
 
   test('It should call AuthUseCase with correct params', async () => {
@@ -150,7 +150,7 @@ describe('Login Router', () => {
     const httpResponse = await sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(401)
-    expect(httpResponse.body).toEqual(new UnauthorizedError())
+    expect(httpResponse.body.error).toBe(new UnauthorizedError().message)
   })
 
   test('It should return 200 status when valid credentials are provided', async () => {
@@ -181,7 +181,7 @@ describe('Login Router', () => {
     const httpResponse = await sut.route(httpRequest)
 
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new InvalidParamError('email'))
+    expect(httpResponse.body.error).toBe(new InvalidParamError('email').message)
   })
 
   test('It should call EmailValidator with correct email', async () => {
@@ -226,7 +226,7 @@ describe('Login Router', () => {
       const httpResponse = await sut.route(httpRequest)
 
       expect(httpResponse.statusCode).toBe(500)
-      expect(httpResponse.body).toEqual(new ServerError())
+      expect(httpResponse.body.error).toBe(new ServerError().message)
     }
   })
 
@@ -254,7 +254,7 @@ describe('Login Router', () => {
       const httpResponse = await sut.route(httpRequest)
 
       expect(httpResponse.statusCode).toBe(500)
-      expect(httpResponse.body).toEqual(new ServerError())
+      expect(httpResponse.body.error).toBe(new ServerError().message)
     }
   })
 })
