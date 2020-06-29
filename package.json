@@ -24,7 +24,8 @@
     "husky": "^4.2.5",
     "jest": "^26.0.1",
     "lint-staged": "^10.2.11",
-    "standart": "^6.1.0"
+    "standart": "^6.1.0",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
